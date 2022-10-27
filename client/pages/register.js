@@ -4,6 +4,8 @@ import{ toast } from 'react-toastify'
 import { Modal } from "antd";
 import Link  from "next/Link";
 
+import AuthForm from "../components/forms/AuthForm";
+
 const Register = () =>{
 
     const[name,setName] = useState("");
@@ -11,103 +13,61 @@ const Register = () =>{
     const[password,setPassword] = useState("");
     const[secret,setSecret] = useState("");
     const[ok,setOk] = useState(false);
+    const[loading, setLoading] = useState(false);
 
     const handleSubmit = async(e) => {
         e.preventDefault();
         // console.log(name,email,password,secret);
         try{
-            const {data} = await axios.post('http://localhost:8000/api/register', {
+            setLoading(true);
+            const {data} = await axios.post(`${process.env.NEXT_PUBLIC_API}/register`, {
             name,
             email,
             password,
             secret,
             });
+            setName("");
+            setEmail("");
+            setPassword("");
+            setSecret("");
             setOk(data.ok);
+            setLoading(false);
         }
         catch(err){
             toast.error(err.response.data);
+            setLoading(false);
         }
     };
     return (
         <div className="container-fluid">
-            <div className="row py-5 bg-secondary text-light">
-                <div className="col text-center">
-                    <h1>Register page</h1>
+            <div className="row py-5 text-light bg-default-image">
+                <div className="col text-white text-center ">
+                    <h1 className="regg">Register page</h1>
                 </div>
             </div>
-            
+            {/* {loading ? <h1>Loading</h1> : ""} */}
             <div className="row py-5">
                 <div className="col-md-6 offset-md-3">
-                    <form onSubmit={handleSubmit}>
-                        <div className="form-group p-1">
-                            <small><label  className="text-muted"> Your Name</label></small>
-                            <input 
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            type="text" 
-                            className="form-control" 
-                            placeholder="Enter Name"
-                            />
-                        </div>
-
-                        <div className="form-group p-1">
-                            <small><label  className="text-muted">Email Id</label></small>
-                            <input 
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            type="email" 
-                            className="form-control"
-                            placeholder="Enter Name"/>
-                        </div>
-
-                        <div className="form-group p-1">
-                            <small><label  className="text-muted">Password</label></small>
-                            <input 
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            type="password" 
-                            className="form-control" 
-                            placeholder="Enter Name"/>
-                        </div>
-
-                        <div className="form-group p-1">
-                            <small>
-                                <label className="text-muted">
-                                    Pick a question
-                                </label>
-                            </small>
-                            <select className="form-control">
-                                <option >What is your favourite color</option>
-                                <option >What is your best friends name</option>
-                                <option >What city you born</option>
-                            </select>
-
-                            <small className="form-text text-muted">
-                                You can use this to reset your password if forgotten
-                            </small>
-
-                            <div className="form-group">
-                                <input 
-                                value={secret}
-                                onChange={(e) => setSecret(e.target.value)}
-                                type="text" 
-                                className="form-control" 
-                                placeholder="Your answer" />
-                            </div>
-                            
-                            <div className="form-group  p-2">
-                                <button className="btn btn-primary col-12">Submit
-                            </button></div>
-                            
-                        </div>
-                    </form>
+                    <AuthForm 
+                    handleSubmit = {handleSubmit}
+                    name = {name}
+                    setName = {setName}
+                    email = {email}
+                    setEmail = {setEmail}
+                    password = {password}
+                    setPassword = {setPassword}
+                    secret = {secret}
+                    setSecret = {setSecret}
+                    loading = {loading}
+                    // setLoading ={setLoading}
+                    />
                 </div>
             </div>
             <div className="row">
                 <div className="col">
                     <Modal
                         title="Congratulations!"
-                        visible={ok}
+                        open={ok}
                         onCancel= {()=> setOk(false)}
                         footer = {null}
                     >
@@ -118,7 +78,16 @@ const Register = () =>{
                     </Modal>
                 </div>
             </div>
-
+            <div className="row">
+                <div className="col">
+                    <div className="text-center">
+                        Already Registered?
+                        <Link href="/login">
+                            <a>Login</a>
+                        </Link> 
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }
