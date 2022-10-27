@@ -1,5 +1,8 @@
 import { useState } from "react";
-
+import axios from 'axios'
+import{ toast } from 'react-toastify'
+import { Modal } from "antd";
+import Link  from "next/Link";
 
 const Register = () =>{
 
@@ -7,11 +10,24 @@ const Register = () =>{
     const[email,setEmail] = useState("");
     const[password,setPassword] = useState("");
     const[secret,setSecret] = useState("");
+    const[ok,setOk] = useState(false);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
-        console.log(name,email,password,secret);
-    }
+        // console.log(name,email,password,secret);
+        try{
+            const {data} = await axios.post('http://localhost:8000/api/register', {
+            name,
+            email,
+            password,
+            secret,
+            });
+            setOk(data.ok);
+        }
+        catch(err){
+            toast.error(err.response.data);
+        }
+    };
     return (
         <div className="container-fluid">
             <div className="row py-5 bg-secondary text-light">
@@ -87,6 +103,22 @@ const Register = () =>{
                     </form>
                 </div>
             </div>
+            <div className="row">
+                <div className="col">
+                    <Modal
+                        title="Congratulations!"
+                        visible={ok}
+                        onCancel= {()=> setOk(false)}
+                        footer = {null}
+                    >
+                        <div>You have successfully registered</div>
+                        <Link href="/login">
+                            <a className="btn btn-primary btn-sm">Login</a>
+                        </Link>
+                    </Modal>
+                </div>
+            </div>
+
         </div>
     )
 }
