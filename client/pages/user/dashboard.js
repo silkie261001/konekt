@@ -4,6 +4,7 @@ import UserRoute from "../../components/routes/UserRoute";
 import CreatePostForm from "../../components/forms/CreatePostForm"
 import { useRouter } from "next/router";
 import axios from "axios";
+import {toast} from 'react-toastify'
 
 
 const Home = () =>{
@@ -20,6 +21,13 @@ const Home = () =>{
         try{
             const {data} = await axios.post('/create-post',{content});
             console.log("create data response => ",data);
+            if(data.error){
+                toast.error(data.error);
+            }
+            else{
+                toast.success("Post Created");
+                setContent("");
+            }
         }
         catch(err){
             console.log(err)
