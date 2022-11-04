@@ -1,6 +1,7 @@
 import User from "../models/user"
 import { hashPassword,comparePassword } from "../helpers/auth.js";
 import jwt from 'jsonwebtoken';
+// import { expressjwt } from "express-jwt";
 
 
 export const register = async(req,res) => {
@@ -41,11 +42,11 @@ export const  login = async(req,res) =>{
         const {email,password} = req.body;
         // check if our db has user with this database
         const user = await User.findOne({email});
-        if(!user) return res.status(400).send("No user found");
+        if(!user) return res.status(400).send("Invalid Credentials");
         // check password
         const match = await comparePassword(password,user.password);
 
-        if(!match ) return res.status(400).send("Wrong Password");
+        if(!match ) return res.status(400).send("Invalid Credentials");
 
         //create signed token
         const token = jwt.sign({_id:user._id},process.env.JWT_SECRET, {expiresIn:"7d"})
@@ -62,5 +63,56 @@ export const  login = async(req,res) =>{
     }
 };
 
+export const currentUser = async(req,res) =>{
+    try{
+        const user = await User.findById(req.user._id);
+        res.json(user);
+        // console.log("doone");
+        res.json({
+            ok:true
+        })
+    }
+    catch(err){
+        console.log(err);
+        res.sendStatus(400);
+    }
+};
 
- 
+export const forgotPassword = async (req,res) =>{
+    // console.log(req.body); 
+    try{
+        const { email,newPassword,secret} = req.body;
+        // validation 
+        console.log(email);
+        if(!newPassword || newPassword.length <6){
+            return res
+            .status(400)
+            .send("password is required and should be 6 character long");
+        }
+
+        if(!secret){
+            return res
+            .status(400)
+            .send("Secret is required")
+        }
+
+        const user = await User.findOne({email, secret});
+        
+        if(!user){
+            return res
+            .status(400)
+            .send("Invalid Credentials");
+        }
+        const hashed = await hashPassword(newPassword);
+        await User.findByIdAndUpdate(user._id , {password: hashed});
+        return res
+            .status(400)
+            .send('password changed')
+    }catch(err){
+        console.log(err)
+        return res.json({
+            error:"something wrong",
+        })
+    }
+
+}

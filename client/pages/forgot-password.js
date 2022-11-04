@@ -4,14 +4,47 @@ import{ toast } from 'react-toastify'
 import { Modal } from "antd";
 import Link  from "next/Link";
 import { UserContext } from "../context";
-import AuthForm from "../components/forms/AuthForm";
+import ForgotPasswordForm from "../components/forms/ForgotPasswordForm";
 import { useRouter } from "next/router";
 
-const Register = () =>{
 
-    const[name,setName] = useState("");
+export const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // console.log(name, email, password, secret);
+      setLoading(true);
+      const { data } = await axios.post(`/forgot-password`, {
+        email,
+        newPassword,
+        secret,
+      });
+  
+      console.log("forgot password res => ", data);
+  
+      if (data.error) {
+        toast.error(data.error);
+        setLoading(false);
+      }
+  
+      if (data.success) {
+        setEmail("");
+        setNewPassword("");
+        setSecret("");
+        setOk(true);
+        setLoading(false);
+        toast.success("Successfully changed");
+      }
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
+};
+
+const ForgotPassword = () =>{
+
+    // const[name,setName] = useState("");
     const[email,setEmail] = useState("");
-    const[password,setPassword] = useState("");
+    const[newPassword,setNewPassword] = useState("");
     const[secret,setSecret] = useState("");
     const[ok,setOk] = useState(false);
     const[loading, setLoading] = useState(false);
@@ -25,15 +58,15 @@ const Register = () =>{
         // console.log(name,email,password,secret);
         try{
             setLoading(true);
-            const {data} = await axios.post(`/register`, {
-            name,
+            const {data} = await axios.post(`/forgot-password`, {
+            // name,
             email,
-            password,
+            newPassword,
             secret,
             });
-            setName("");
+            // setName("");
             setEmail("");
-            setPassword("");
+            setNewPassword("");
             setSecret("");
             setOk(data.ok);
             setLoading(false);
@@ -50,20 +83,20 @@ const Register = () =>{
         <div className="container-fluid">
             <div className="row py-5 text-light bg-default-image">
                 <div className="col text-white text-center ">
-                    <h1 className="regg">Register page</h1>
+                    <h1 className="regg">Forgot Password</h1>
                 </div>
             </div>
             {/* {loading ? <h1>Loading</h1> : ""} */}
             <div className="row py-5">
                 <div className="col-md-6 offset-md-3">
-                    <AuthForm 
+                    <ForgotPasswordForm 
                     handleSubmit = {handleSubmit}
-                    name = {name}
-                    setName = {setName}
+                    // name = {name}
+                    // setName = {setName}
                     email = {email}
                     setEmail = {setEmail}
-                    password = {password}
-                    setPassword = {setPassword}
+                    newPassword = {newPassword}
+                    setNewPassword = {setNewPassword}
                     secret = {secret}
                     setSecret = {setSecret}
                     loading = {loading}
@@ -79,25 +112,16 @@ const Register = () =>{
                         onCancel= {()=> setOk(false)}
                         footer = {null}
                     >
-                        <div>You have successfully registered</div>
+                        <div>Password is changed</div>
                         <Link href="/login">
                             <a className="btn btn-primary btn-sm">Login</a>
                         </Link>
                     </Modal>
                 </div>
             </div>
-            <div className="row">
-                <div className="col">
-                    <div className="text-center">
-                        Already Registered?
-                        <Link href="/login">
-                            <a>Login</a>
-                        </Link> 
-                    </div>
-                </div>
-            </div>
         </div>
     )
 }
 
-export default Register;
+export default ForgotPassword;
+// export default handleSubmit;

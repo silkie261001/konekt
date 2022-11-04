@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from 'axios'
 import{ toast } from 'react-toastify'
 import { Modal } from "antd";
 import Link  from "next/Link";
 import {useRouter} from "next/router"
 import AuthForm from "../components/forms/AuthForm";
+import {UserContext} from "../context"
 
 const Login = () =>{
 
@@ -12,6 +13,9 @@ const Login = () =>{
     const[password,setPassword] = useState("");
     const[loading, setLoading] = useState(false);
 
+    const[state, setState] = useContext(UserContext);
+
+    
     const router = useRouter();
 
     const handleSubmit = async(e) => {
@@ -19,18 +23,27 @@ const Login = () =>{
         // console.log(name,email,password,secret);
         try{
             setLoading(true);
-            const {data} = await axios.post(`${process.env.NEXT_PUBLIC_API}/login`, {
+            const {data} = await axios.post(`/login`, {
             email,
             password,
             });
-            console.log(data)
-            // router.push("/");
+            //update context
+            setState({
+                user:data.user,
+                token: data.token,
+            });
+            // save in local stroage
+            window.localStorage.setItem('auth',JSON.stringify(data));
+            router.push("/");
         }
         catch(err){
             toast.error(err.response.data);
             setLoading(false);
         }
     };
+
+    if(state && state.token) router.push("/");
+    
     return (
         <div className="container-fluid">
             <div className="row py-5 text-light bg-default-image">
@@ -59,6 +72,16 @@ const Login = () =>{
                         Not yet registered?
                         <Link href="/register">
                             <a>Register</a>
+                        </Link> 
+                    </div>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col">
+                <div className="text-center">
+                        <Link href="/forgot-password">
+                            <a className="text-danger">Forgot Password</a>
                         </Link> 
                     </div>
                 </div>

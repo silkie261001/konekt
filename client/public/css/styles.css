@@ -8,3 +8,9 @@
     color: white;
     font-size: 100;
 }
+.img {
+    vertical-align: middle;
+    border-style: none;
+    max-width: 100%;
+    height: auto;
+}
