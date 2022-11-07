@@ -20,14 +20,14 @@ const Nav = () => {
   };
   return (
     <nav
-      className='nav bg-dark d-flex justify-content-between'
+      className='nav bg-dark d-flex justify-content-end'
       style={{ backgroundColor: 'grey' }}
     >
       <Link href='/'>
         <a className='nav-link text-light'>Konekt</a>
       </Link>
 
-      <div className='dropdown'>
+      {/* <div className='dropdown'>
         <a
           className='btn btn-secondary dropdown-toggle'
           href='#'
@@ -54,7 +54,7 @@ const Nav = () => {
             </a>
           </li>
         </ul>
-      </div>
+      </div> */}
 
       {state !== null ? (
         <>
