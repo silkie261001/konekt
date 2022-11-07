@@ -67,6 +67,15 @@ const Nav = () => {
               {state && state.user && state.user.name}
             </a>
           </Link>
+          <Link href='/user/profile/update'>
+            <a
+              className={`nav-link text-light ${
+                current === '/user/profile/update' && 'active'
+              }`}
+            >
+              Profile
+            </a>
+          </Link>
           <a onClick={logout} className='nav-link text-light'>
             Logout
           </a>

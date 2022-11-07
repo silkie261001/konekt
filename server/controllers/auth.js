@@ -1,7 +1,9 @@
 import User from '../models/user';
 import { hashPassword, comparePassword } from '../helpers/auth.js';
 import jwt from 'jsonwebtoken';
-import { nanoid } from 'nanoid';
+// import fetch from 'node-fetch';
+import { v4 as uuidv4 } from 'uuid';
+// import { nanoid } from 'nanoid';
 // import { expressjwt } from "express-jwt";
 
 export const register = async (req, res) => {
@@ -19,7 +21,13 @@ export const register = async (req, res) => {
 
   // hash password
   const hashedPassword = await hashPassword(password);
-  const user = new User({ name, email, password: hashedPassword, secret });
+  const user = new User({
+    name,
+    email,
+    password: hashedPassword,
+    secret,
+    username: uuidv4(),
+  });
   try {
     // const hashpassword = await hashPassword(password);
     // const user = new User({name, email, password:hashpassword ,secret});
@@ -106,5 +114,16 @@ export const forgotPassword = async (req, res) => {
     return res.json({
       error: 'something wrong',
     });
+  }
+};
+
+const profileUpdate = async (req, res) => {
+  try {
+    console.log('profile update req.body =>', req.body);
+  } catch (err) {
+    if (err.code == 11000) {
+      return res.json({ error: 'Duplicate username' });
+    }
+    console.log(err);
   }
 };
