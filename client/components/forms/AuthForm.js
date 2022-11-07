@@ -74,7 +74,7 @@ const AuthForm = ({
         type='email'
         className='form-control'
         placeholder='Enter email'
-        disabled={profileUpdate}
+        // disabled={profileUpdate}
       />
     </div>
 

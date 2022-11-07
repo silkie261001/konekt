@@ -116,3 +116,14 @@ export const forgotPassword = async (req, res) => {
     });
   }
 };
+
+const profileUpdate = async (req, res) => {
+  try {
+    console.log('profile update req.body =>', req.body);
+  } catch (err) {
+    if (err.code == 11000) {
+      return res.json({ error: 'Duplicate username' });
+    }
+    console.log(err);
+  }
+};
