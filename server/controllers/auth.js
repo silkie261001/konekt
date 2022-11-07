@@ -1,7 +1,6 @@
 import User from '../models/user';
 import { hashPassword, comparePassword } from '../helpers/auth.js';
 import jwt from 'jsonwebtoken';
-import { nanoid } from 'nanoid';
 // import { expressjwt } from "express-jwt";
 
 export const register = async (req, res) => {
