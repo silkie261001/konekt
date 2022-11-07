@@ -117,7 +117,7 @@ export const forgotPassword = async (req, res) => {
   }
 };
 
-const profileUpdate = async (req, res) => {
+export const profileUpdate = async (req, res) => {
   try {
     console.log('profile update req.body =>', req.body);
   } catch (err) {
