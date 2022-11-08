@@ -1,6 +1,7 @@
 import User from '../models/user';
 import { hashPassword, comparePassword } from '../helpers/auth.js';
 import jwt from 'jsonwebtoken';
+import { v4 as uuidv4 } from 'uuid';
 // import { expressjwt } from "express-jwt";
 
 export const register = async (req, res) => {
@@ -18,7 +19,13 @@ export const register = async (req, res) => {
 
   // hash password
   const hashedPassword = await hashPassword(password);
-  const user = new User({ name, email, password: hashedPassword, secret });
+  const user = new User({
+    name,
+    email,
+    password: hashedPassword,
+    secret,
+    username: uuidv4(),
+  });
   try {
     // const hashpassword = await hashPassword(password);
     // const user = new User({name, email, password:hashpassword ,secret});
@@ -105,5 +112,48 @@ export const forgotPassword = async (req, res) => {
     return res.json({
       error: 'something wrong',
     });
+  }
+};
+
+export const profileUpdate = async (req, res) => {
+  try {
+    console.log('profile ', req.body);
+    const data = {};
+
+    if (req.body.username) {
+      data.username = req.body.username;
+    }
+    if (req.body.about) {
+      data.about = req.body.about;
+    }
+    if (req.body.name) {
+      data.name = req.body.name;
+    }
+    if (req.body.password) {
+      if (req.body.password.length < 6) {
+        return res.json({
+          error: 'password should be minimum 6 character long',
+        });
+      } else {
+        data.password = await hashPassword(req.body.password);
+      }
+    }
+    if (req.body.secret) {
+      data.secret = req.body.secret;
+    }
+
+    if (req.body.image) {
+      data.image = req.body.image;
+    }
+
+    let user = await User.findByIdAndUpdate(req.auth._id, data, { new: true });
+
+    user.password = undefined;
+    user.secret = undefined;
+    res.json(user);
+  } catch (err) {
+    if (err.code == 11000) {
+      return res.json({ errpr: 'duplicate username' });
+    }
   }
 };

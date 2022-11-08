@@ -12,8 +12,42 @@ const AuthForm = ({
   setSecret,
   loading,
   page,
+  profileUpdate,
+  username,
+  setUsername,
+  about,
+  setAbout,
+  //   profileUpdate,
 }) => (
   <form onSubmit={handleSubmit}>
+    {profileUpdate && (
+      <div className='form-group p-1'>
+        <small>
+          <label className='text-muted'>Username</label>
+        </small>
+        <input
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          type='text'
+          className='form-control'
+          placeholder='Enter Name'
+        />
+      </div>
+    )}
+    {profileUpdate && (
+      <div className='form-group p-1'>
+        <small>
+          <label className='text-muted'>About</label>
+        </small>
+        <input
+          value={about}
+          onChange={(e) => setAbout(e.target.value)}
+          type='text'
+          className='form-control'
+          placeholder='Enter Name'
+        />
+      </div>
+    )}
     {page !== 'login' && (
       <div className='form-group p-1'>
         <small>
@@ -39,6 +73,7 @@ const AuthForm = ({
         type='email'
         className='form-control'
         placeholder='Enter email'
+        disabled={profileUpdate}
       />
     </div>
 
@@ -86,7 +121,9 @@ const AuthForm = ({
     <div className='form-group  p-2'>
       <button
         disabled={
-          page === 'login'
+          profileUpdate
+            ? loading
+            : page === 'login'
             ? !email || !password
             : !name || !email || !secret || !password
         }

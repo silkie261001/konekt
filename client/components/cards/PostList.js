@@ -32,7 +32,9 @@ const PostList = ({ posts, handleDelete }) => {
             </div>
             <div className='card-body'>
               {/* {renderHTML(post.content)} */}
-              {post.content}
+              <div dangerouslySetInnerHTML={{ __html: post.content }}></div>
+
+              {/* {post.content} */}
             </div>
             <div className='card-footer '>
               {/* <img src={post.image && post.image.url} alt={post.postedBy.name }/> */}
