@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import PostList from '../../components/cards/PostList';
 import People from '../../components/cards/People';
 import Link from 'next/Link';
-import { Modal } from 'antd';
+import { Modal, Pagination } from 'antd';
 import CommentForm from '../../components/forms/CommentForm';
 // import { imageSource } from '../../functions';
 // import { findPeople } from '../../../server/controllers/auth';
@@ -30,6 +30,10 @@ const Home = () => {
   const [visible, setVisible] = useState(false);
   const [currentPost, setCurrentPost] = useState({});
 
+  //pagination
+  const [totalPosts, setTotalPosts] = useState(0);
+  const [page, setPage] = useState(1);
+
   //route
   const router = useRouter();
 
@@ -38,11 +42,19 @@ const Home = () => {
       fashionFeed();
       findPeople();
     }
-  }, [state && state.token]);
+  }, [state && state.token, page]);
+
+  useEffect(() => {
+    try {
+      axios.get('/total-posts').then(({ data }) => setTotalPosts(data));
+    } catch (err) {
+      console.log(err);
+    }
+  });
 
   const fashionFeed = async () => {
     try {
-      const { data } = await axios.get('/fashion-feed');
+      const { data } = await axios.get(`/fashion-feed/${page}`);
       // console.log('user posts =>' ,data);
       setPosts(data);
     } catch (err) {
@@ -68,6 +80,7 @@ const Home = () => {
       if (data.error) {
         toast.error(data.error);
       } else {
+        setPage(1);
         fashionFeed();
         toast.success('Post Created');
         setContent('');
@@ -181,8 +194,20 @@ const Home = () => {
     }
   };
 
-  const removeComment = async () => {
-    //
+  const removeComment = async (postId, comment) => {
+    let answer = window.confirm('Are you sure');
+    // console.log(postId, comment);
+    if (!answer) return;
+    try {
+      const { data } = await axios.put('/remove-comment', {
+        postId,
+        comment,
+      });
+      console.log('comment removed', data);
+      fashionFeed();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -210,6 +235,13 @@ const Home = () => {
             handleLike={handleLike}
             handleUnlike={handleUnlike}
             handleComment={handleComment}
+            removeComment={removeComment}
+          />
+
+          <Pagination
+            current={page}
+            total={(totalPosts / 3) * 10}
+            onChange={(value) => setPage(value)}
           />
         </div>
 

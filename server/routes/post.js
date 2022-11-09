@@ -17,6 +17,7 @@ import {
   unlikePost,
   addComment,
   removeComment,
+  totalPosts,
 } from '../controllers/post';
 import { requireSignin, canEditDeletePost } from '../middlewares/ss.js';
 
@@ -38,12 +39,14 @@ router.delete(
   deletePost
 );
 
-router.get('/fashion-feed', requireSignin, fashionFeed);
+router.get('/fashion-feed/:page', requireSignin, fashionFeed);
 
 router.put('/like-post', requireSignin, likePost);
 router.put('/unlike-post', requireSignin, unlikePost);
 
 router.put('/add-comment', requireSignin, addComment);
 router.put('/remove-comment', requireSignin, removeComment);
+
+router.get('/total-posts', totalPosts);
 
 module.exports = router;
