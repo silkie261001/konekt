@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import PostList from '../../components/cards/PostList';
 import People from '../../components/cards/People';
 import Link from 'next/Link';
+// import { imageSource } from '../../functions';
 // import { findPeople } from '../../../server/controllers/auth';
 
 const Home = () => {
@@ -133,7 +134,7 @@ const Home = () => {
     // console.log('like this post ', _id);
     try {
       const { data } = await axios.put('/like-post', { _id });
-      console.log('liekd', data);
+      // console.log('liekd', data);
       fashionFeed();
     } catch (err) {
       console.log(err);
@@ -144,7 +145,7 @@ const Home = () => {
     // console.log('unlike this post ', _id);
     try {
       const { data } = await axios.put('/unlike-post', { _id });
-      console.log('unliekd', data);
+      // console.log('unliekd', data);
       fashionFeed();
     } catch (err) {
       console.log(err);
