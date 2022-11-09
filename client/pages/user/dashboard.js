@@ -6,6 +6,9 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import PostList from '../../components/cards/PostList';
+import People from '../../components/cards/People';
+import Link from 'next/Link';
+// import { findPeople } from '../../../server/controllers/auth';
 
 const Home = () => {
   const [state, setState] = useContext(UserContext);
@@ -16,19 +19,34 @@ const Home = () => {
   //posts
   const [posts, setPosts] = useState([]);
 
+  //people
+  const [people, setPeople] = useState([]);
+
   //route
 
   const router = useRouter();
 
   useEffect(() => {
-    if (state && state.token) fetchUserPosts();
+    if (state && state.token) {
+      fashionFeed();
+      findPeople();
+    }
   }, [state && state.token]);
 
-  const fetchUserPosts = async () => {
+  const fashionFeed = async () => {
     try {
-      const { data } = await axios.get('/user-posts');
+      const { data } = await axios.get('/fashion-feed');
       // console.log('user posts =>' ,data);
       setPosts(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const findPeople = async (req, res) => {
+    try {
+      const { data } = await axios.get('/find-people');
+      setPeople(data);
     } catch (err) {
       console.log(err);
     }
@@ -43,7 +61,7 @@ const Home = () => {
       if (data.error) {
         toast.error(data.error);
       } else {
-        fetchUserPosts();
+        fashionFeed();
         toast.success('Post Created');
         setContent('');
         setImage({});
@@ -81,7 +99,53 @@ const Home = () => {
       if (!answer) return;
       const { data } = await axios.delete(`/delete-post/${post._id}`);
       toast.error('Post deleted');
-      fetchUserPosts();
+      fashionFeed();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleFollow = async (user) => {
+    // console.log('add ', user);
+    try {
+      const { data } = await axios.put('/user-follow', { _id: user._id });
+      // console.log('handle ', data);
+      // update local strorage and update user
+      let auth = JSON.parse(localStorage.getItem('auth'));
+      auth.user = data;
+      localStorage.setItem('auth', JSON.stringify(auth));
+
+      // update context
+      setState({ ...state, user: data });
+      // update people state
+      let filtered = people.filter((p) => p._id !== user._id);
+      setPeople(filtered);
+
+      // rerender the post
+      fashionFeed();
+      toast.success(`following ${user.name}`);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleLike = async (_id) => {
+    // console.log('like this post ', _id);
+    try {
+      const { data } = await axios.put('/like-post', { _id });
+      console.log('liekd', data);
+      fashionFeed();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleUnlike = async (_id) => {
+    // console.log('unlike this post ', _id);
+    try {
+      const { data } = await axios.put('/unlike-post', { _id });
+      console.log('unliekd', data);
+      fashionFeed();
     } catch (err) {
       console.log(err);
     }
@@ -105,11 +169,23 @@ const Home = () => {
             image={image}
           />
           <br />
-          <PostList posts={posts} handleDelete={handleDelete} />
+          <PostList
+            posts={posts}
+            handleDelete={handleDelete}
+            handleLike={handleLike}
+            handleUnlike={handleUnlike}
+          />
         </div>
 
         {/* <pre>{JSON.stringify(posts,null,4)} </pre> */}
-        <div className='col-md-4'>Sidebar</div>
+        <div className='col-md-4'>
+          {state && state.user && state.user.following && (
+            <Link href={`/user/following`}>
+              <a className='h6'>{state.user.following.length} Following</a>
+            </Link>
+          )}
+          <People people={people} handleFollow={handleFollow} />
+        </div>
       </div>
     </div>
     // </UserRoute>
