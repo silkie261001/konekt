@@ -18,6 +18,7 @@ import {
   addComment,
   removeComment,
   totalPosts,
+  posts,
 } from '../controllers/post';
 import { requireSignin, canEditDeletePost } from '../middlewares/ss.js';
 
@@ -49,4 +50,5 @@ router.put('/remove-comment', requireSignin, removeComment);
 
 router.get('/total-posts', totalPosts);
 
+router.get('/posts', posts);
 module.exports = router;
