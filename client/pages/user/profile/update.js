@@ -103,7 +103,6 @@ const ProfileUpdate = () => {
           <h1 className='regg'>Profile</h1>
         </div>
       </div>
-      {/* {loading ? <h1>Loading</h1> : ""} */}
       <div className='row py-5'>
         <div className='col-md-6 offset-md-3'>
           {/* upload image */}
