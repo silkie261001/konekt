@@ -20,7 +20,7 @@ const Post = ({
   handleLike,
   handleUnlike,
   handleComment,
-  commentsCount = 10,
+  commentsCount = 2,
   removeComment,
 }) => {
   const [state] = useContext(UserContext);
@@ -42,6 +42,8 @@ const Post = ({
           </div>
           <div className='card-body'>
             {/* {renderHTML(post.content)} */}
+
+            {/* To render HTML in post */}
             <div dangerouslySetInnerHTML={{ __html: post.content }}></div>
 
             {/* {post.content} */}

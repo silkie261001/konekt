@@ -10,6 +10,7 @@ import People from '../../components/cards/People';
 import Link from 'next/Link';
 import { Modal, Pagination } from 'antd';
 import CommentForm from '../../components/forms/CommentForm';
+import Search from '../../components/Search';
 // import { imageSource } from '../../functions';
 // import { findPeople } from '../../../server/controllers/auth';
 
@@ -247,6 +248,8 @@ const Home = () => {
 
         {/* <pre>{JSON.stringify(posts,null,4)} </pre> */}
         <div className='col-md-4'>
+          <Search />
+          <br />
           {state && state.user && state.user.following && (
             <Link href={`/user/following`}>
               <a className='h6'>{state.user.following.length} Following</a>

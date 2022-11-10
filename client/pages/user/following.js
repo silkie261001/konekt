@@ -6,6 +6,7 @@ import { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { RollbackOutlined } from '@ant-design/icons';
 import Link from 'next/Link';
+import { toast } from 'react-toastify';
 
 // import user from '../../../server/models/user';
 
@@ -55,6 +56,8 @@ const Following = () => {
       setPeople(filtered);
 
       toast.error(`Unfollowed ${user.name}`);
+      console.log();
+      // fetchFollowing();
     } catch (err) {
       console.log(err);
     }
