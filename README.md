@@ -45,6 +45,7 @@
 - Image post using cloudinary(AWS)
 - getServerSideProps using next.js
 - SEO Optimisation  
+- Admin access for deleting unwanted postes
 
 ## Contributors: 
 
@@ -52,6 +53,8 @@
 
 Team Name: 404 project not found
 
+* [Kartikey Gupta](https://github.com/kartikey2991) 
+
 * [Silkie Agarwal](https://github.com/silkie261001) 
 
-* [Kartikey Gupta](https://github.com/kartikey2991) 
+
